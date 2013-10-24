@@ -7,7 +7,7 @@ package com.engine.framework.database;
 
 import java.util.ArrayList;
 
-public abstract class EngineDatabase {
+public class EngineDatabase {
 
 	private String DBName;
 	private int DBVersion;

@@ -16,21 +16,51 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public abstract class EngineDBHelper extends SQLiteOpenHelper {
+public class DBManager extends SQLiteOpenHelper {
 
 	private EngineDatabase mDatabase;
-
+	public static DBManager dbManager;
+	
 	/**
 	 * @param context - application context
-	 * @param name - database name
-	 * @param factory - cusorfactory
-	 * @param version - database version
+	 * @param database - database
 	 */
-	public EngineDBHelper(Context context, EngineDatabase database) {
+	public DBManager(Context context, EngineDatabase database) {
 		super(context, database.getName(), null, database.getVersion());
 		mDatabase = database;
 	}
+	
+	/**
+	 * creates the database 
+	 * tip: call this app in the activity that is launch initially
+	 * 
+	 * @param context - the application's context
+	 * @param database - the database information of the app
 
+	 */
+	public static void createDatabase(Context context, EngineDatabase database) {
+		
+		if(dbManager == null)
+			dbManager = new DBManager( context, database);
+		
+	}
+	
+	/**
+	 * @return the instance of the helper class
+	 * - returns null when the database is not yet created
+	 */
+	public static DBManager getInstance() { 
+		return dbManager;
+	}
+	
+	/**
+	 * @return the instance of the database information set when creating the database
+	 * - returns null when the database is not yet created
+	 */
+	public EngineDatabase getDatabaseInfo() {
+		return mDatabase;
+	}
+	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		
@@ -76,13 +106,13 @@ public abstract class EngineDBHelper extends SQLiteOpenHelper {
 	    	myOutput.flush();
 	    	myOutput.close();
 	    	myInput.close();
-	    	
+
 	    	return true;
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 

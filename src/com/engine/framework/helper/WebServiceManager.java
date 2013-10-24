@@ -16,7 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.engine.framework.enumerations.Method;
 import com.engine.framework.webservice.WebServiceInfo;
 
-public class EngineWSHelper {
+public class WebServiceManager {
 
 	public static InputStream getWebServiceResponse(WebServiceInfo wsInfo) throws Exception {
 		

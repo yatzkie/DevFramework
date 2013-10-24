@@ -5,19 +5,67 @@
  */
 package com.engine.framework.database;
 
-import android.content.ContentValues;
+import com.engine.framework.helper.DBManager;
 
-public interface Table {
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+public abstract class Table {
 	
-	public String getTableStructure();
-	public String getName();
+	private SQLiteDatabase db;
 	
-	public void insert(ContentValues values);
-	public void update(ContentValues values, String filter);
-	public void delete(ContentValues values, String filter);
-	public void select();
-	public void select(String filter);
-	public void query(String query);
+	public abstract String getTableStructure();
+	public abstract String getName();
+	
+	public long insert(ContentValues values) {
+		db = DBManager.getInstance().getWritableDatabase();
+		if(db != null) return db.insert( getName(), null, values);
+		return -1;
+
+	}
+	
+	public int update(ContentValues values, String filter) {
+		db = DBManager.getInstance().getWritableDatabase();
+		if(db != null) return db.update( getName(), values, filter, null);
+		return 0;
+	}
+	
+	public int update(ContentValues values, String whereClause, String[] filterValues) {
+		db = DBManager.getInstance().getWritableDatabase();
+		if(db != null) return db.update( getName(), values, whereClause, filterValues );
+		return 0;
+	}
+	
+	public int delete(ContentValues values, String filter) {
+		db = DBManager.getInstance().getWritableDatabase();
+		if(db != null) return db.delete( getName(), filter, null);
+		return 0;
+	}
+	
+	public int delete(ContentValues values, String whereClause, String[] filterValues) {
+		db = DBManager.getInstance().getWritableDatabase();
+		if(db != null) return db.delete( getName(), whereClause, filterValues);
+		return 0;
+	}
+	
+	public Cursor select() {
+		db = DBManager.getInstance().getReadableDatabase();
+		if(db != null) return db.rawQuery( "SELECT * FROM " + getName(), null);
+		return null;
+	}
+	
+	public Cursor select(String filter,String[] filterValues) {
+		db = DBManager.getInstance().getReadableDatabase();
+		if(db != null) return db.rawQuery( "SELECT * FROM " + getName(), filterValues );
+		return null;
+	}
+	
+	public Cursor rawQuery(String query, String[] filterValues) {
+		db = DBManager.getInstance().getReadableDatabase();
+		if(db != null) return db.rawQuery( query , filterValues );
+		return null;
+	}
 	
 	
 }
