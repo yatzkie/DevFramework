@@ -1,6 +1,5 @@
 /**
  * Author: Ronald Phillip C. Cui
- * Reference Author: Napolean A. Patague
  * Date: Oct 12, 2013
  */
 package com.engine.framework.database;

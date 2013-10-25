@@ -5,7 +5,7 @@
  */
 package com.engine.framework.database;
 
-import com.engine.framework.helper.DBManager;
+import com.engine.framework.helper.DatabaseHelper;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -19,50 +19,50 @@ public abstract class Table {
 	public abstract String getName();
 	
 	public long insert(ContentValues values) {
-		db = DBManager.getInstance().getWritableDatabase();
+		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.insert( getName(), null, values);
 		return -1;
 
 	}
 	
 	public int update(ContentValues values, String filter) {
-		db = DBManager.getInstance().getWritableDatabase();
+		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.update( getName(), values, filter, null);
 		return 0;
 	}
 	
 	public int update(ContentValues values, String whereClause, String[] filterValues) {
-		db = DBManager.getInstance().getWritableDatabase();
+		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.update( getName(), values, whereClause, filterValues );
 		return 0;
 	}
 	
 	public int delete(ContentValues values, String filter) {
-		db = DBManager.getInstance().getWritableDatabase();
+		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.delete( getName(), filter, null);
 		return 0;
 	}
 	
 	public int delete(ContentValues values, String whereClause, String[] filterValues) {
-		db = DBManager.getInstance().getWritableDatabase();
+		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.delete( getName(), whereClause, filterValues);
 		return 0;
 	}
 	
 	public Cursor select() {
-		db = DBManager.getInstance().getReadableDatabase();
+		db = DatabaseHelper.getInstance().getReadableDatabase();
 		if(db != null) return db.rawQuery( "SELECT * FROM " + getName(), null);
 		return null;
 	}
 	
 	public Cursor select(String filter,String[] filterValues) {
-		db = DBManager.getInstance().getReadableDatabase();
+		db = DatabaseHelper.getInstance().getReadableDatabase();
 		if(db != null) return db.rawQuery( "SELECT * FROM " + getName(), filterValues );
 		return null;
 	}
 	
 	public Cursor rawQuery(String query, String[] filterValues) {
-		db = DBManager.getInstance().getReadableDatabase();
+		db = DatabaseHelper.getInstance().getReadableDatabase();
 		if(db != null) return db.rawQuery( query , filterValues );
 		return null;
 	}

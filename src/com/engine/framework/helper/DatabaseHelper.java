@@ -1,6 +1,5 @@
 /**
  * Author: Ronald Phillip C. Cui
- * Reference Author: Napolean A. Patague
  * Date: Oct 12, 2013
  */
 package com.engine.framework.helper;
@@ -16,16 +15,16 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBManager extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private EngineDatabase mDatabase;
-	public static DBManager dbManager;
+	public static DatabaseHelper dbManager;
 	
 	/**
 	 * @param context - application context
 	 * @param database - database
 	 */
-	public DBManager(Context context, EngineDatabase database) {
+	public DatabaseHelper(Context context, EngineDatabase database) {
 		super(context, database.getName(), null, database.getVersion());
 		mDatabase = database;
 	}
@@ -41,7 +40,7 @@ public class DBManager extends SQLiteOpenHelper {
 	public static void createDatabase(Context context, EngineDatabase database) {
 		
 		if(dbManager == null)
-			dbManager = new DBManager( context, database);
+			dbManager = new DatabaseHelper( context, database);
 		
 	}
 	
@@ -49,7 +48,7 @@ public class DBManager extends SQLiteOpenHelper {
 	 * @return the instance of the helper class
 	 * - returns null when the database is not yet created
 	 */
-	public static DBManager getInstance() { 
+	public static DatabaseHelper getInstance() { 
 		return dbManager;
 	}
 	
