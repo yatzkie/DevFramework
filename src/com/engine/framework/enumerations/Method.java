@@ -7,5 +7,13 @@ package com.engine.framework.enumerations;
 
 public enum Method {
 		POST,
-		GET
+		GET;
+		
+		public String toString() {
+			switch(this) {
+				case POST: return "POST";
+				case GET: return "GET";
+				default: return "";
+			}
+		}
 }

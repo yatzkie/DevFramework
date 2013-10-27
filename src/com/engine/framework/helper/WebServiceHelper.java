@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -20,36 +23,36 @@ public class WebServiceHelper {
 
 	public static InputStream getWebServiceResponse(WebServiceInfo wsInfo) throws Exception {
 		
-			HttpClient client = new DefaultHttpClient();
+		HttpClient client = new DefaultHttpClient();
+		
+		HttpResponse response = null;
+		
+		if(wsInfo.getMethod() == Method.GET) {
 			
-			HttpResponse response = null;
+			HttpGet get = new HttpGet( wsInfo.getUrl() );
 			
-			if(wsInfo.getMethod() == Method.GET) {
-				
-				HttpGet get = new HttpGet( wsInfo.getUrl() );
-				
-				response = client.execute( get );
-				
-			}
-			else if(wsInfo.getMethod() == Method.POST) {
-				
-				HttpPost post = new HttpPost(wsInfo.getUrl());
-				
-				if(wsInfo.getParam() != null)
-					post.setEntity( new UrlEncodedFormEntity( wsInfo.getParam() ) );
-				
-				response = client.execute( post );
-				
-			}
+			response = client.execute( get );
 			
-			if(response != null) {
-				
-				int statusCode = response.getStatusLine().getStatusCode();
-				
-				if(statusCode == HttpStatus.SC_OK)
-					return response.getEntity().getContent();
-				
-			}
+		}
+		else if(wsInfo.getMethod() == Method.POST) {
+			
+			HttpPost post = new HttpPost(wsInfo.getUrl());
+			
+			if(wsInfo.getParam() != null)
+				post.setEntity( new UrlEncodedFormEntity( wsInfo.getParam() ) );
+			
+			response = client.execute( post );
+			
+		}
+		
+		if(response != null) {
+			
+			int statusCode = response.getStatusLine().getStatusCode();
+			
+			if(statusCode == HttpStatus.SC_OK)
+				return response.getEntity().getContent();
+			
+		}
 			
 		return null;
 		

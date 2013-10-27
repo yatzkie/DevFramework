@@ -5,6 +5,7 @@
  */
 package com.engine.framework.webservice;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class WebServiceInfo {
 	private Method mMethod;
 	private List<NameValuePair> mParam;
 	private String mExtra;
+	private File mUploadFile;
 	
 	public WebServiceInfo(String url, Method method) {
 		mUrl = url;
@@ -66,4 +68,14 @@ public class WebServiceInfo {
 	public String getExtra() {
 		return mExtra;
 	}
+	
+	public void setUploadFile(File uploadFile) {
+		mUploadFile = uploadFile;
+	}
+	
+	public File getUploadFile() {
+		return mUploadFile;
+	}
+	
+	
 }
