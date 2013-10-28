@@ -4,10 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -15,6 +11,10 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.engine.framework.enumerations.Method;
 import com.engine.framework.webservice.WebServiceInfo;
@@ -75,5 +75,16 @@ public class WebServiceHelper {
 		
 	}
 	
-	
+	public static boolean isNetworkAvailable(Context context) {
+		
+	    ConnectivityManager cm = (ConnectivityManager) 
+	    		context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    
+	    return false;
+	} 
 }

@@ -9,6 +9,7 @@ public enum ResponseStatus {
 	
 		SUCCESS,
 		FAILED,
-		CANCELLED
+		CANCELLED,
+		NO_CONNECTION
 	
 }
