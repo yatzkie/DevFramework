@@ -13,6 +13,7 @@ import com.engine.framework.webservice.interfaces.WebServiceListener;
 import com.engine.framework.webservice.response.Response;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
@@ -29,6 +30,15 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 	
 	public WebService setProgressDialog(ProgressDialog dialog) {
 		mDialog = dialog;
+		return this;
+	}
+	
+	public WebService setProgressDialog(Context context, String title, String message) {
+		mDialog = new ProgressDialog(context);
+		mDialog.setTitle(title);
+		mDialog.setMessage(message);
+		mDialog.setCancelable(false);
+		mDialog.setIndeterminate(true);
 		return this;
 	}
 	

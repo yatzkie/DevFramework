@@ -8,11 +8,6 @@ import android.app.Activity;
 
 public abstract class EngineActivity extends Activity {
 
-	public abstract void onBackPressed();
-	public abstract void onStart();
-	public abstract void onPause();
-	public abstract void onResume();
-	public abstract void onDestroy();
-	public abstract void init();
+	public abstract void showAlertDialog(String title, String message);
 	
 }
