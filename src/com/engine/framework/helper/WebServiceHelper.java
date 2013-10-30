@@ -11,6 +11,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -58,23 +60,6 @@ public class WebServiceHelper {
 		
 	}
 
-	public static String getResponseString(InputStream source) throws IOException {
-
-		String result = "";
-		
-		BufferedReader br = new BufferedReader( new InputStreamReader( source ) );
-		
-		String line = "";
-		
-		while( (line = br.readLine() ) != null )
-			result+=line;
-		
-		br.close();
-		
-		return result;
-		
-	}
-	
 	public static boolean isNetworkAvailable(Context context) {
 		
 	    ConnectivityManager cm = (ConnectivityManager) 

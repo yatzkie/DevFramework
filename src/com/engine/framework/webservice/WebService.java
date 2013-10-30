@@ -8,6 +8,7 @@ package com.engine.framework.webservice;
 import java.io.InputStream;
 
 import com.engine.framework.enumerations.ResponseStatus;
+import com.engine.framework.helper.FileHelper;
 import com.engine.framework.helper.WebServiceHelper;
 import com.engine.framework.webservice.interfaces.WebServiceListener;
 import com.engine.framework.webservice.response.Response;
@@ -73,7 +74,7 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 			
 			if(source != null) {
 				
-				response.setResult( WebServiceHelper.getResponseString( source ) );
+				response.setResult( FileHelper.getResponseString( source ) );
 				response.setStatus( ResponseStatus.SUCCESS );
 				source.close();
 				
