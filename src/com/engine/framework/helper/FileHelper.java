@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -54,35 +55,6 @@ public class FileHelper {
 		
 	}
 	
-	public static FileStatus writeToSDCard(String dirName, String fileName, byte[] data) {
-		
-		String sdState = Environment.getExternalStorageState();
-		
-		if(sdState == Environment.MEDIA_MOUNTED) {
-			
-			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-			
-			try {
-				
-				File file = new File( sdCardDir, "/" + fileName);
-				FileOutputStream fos = new FileOutputStream(file);
-				fos.write(data);
-				fos.close();
-				
-				return FileStatus.WRITE_SUCCESSFUL;
-			}
-			catch(IOException e) {
-				e.printStackTrace();
-				return FileStatus.WRITE_FAILED;
-			}
-				
-			
-		}
-		else
-			return FileStatus.SD_UNMOUNTED;
-		
-	}
-	
 	public static FileStatus saveImageToSD(String dirName, String fileName, byte[] data) {
 		
 		
@@ -108,7 +80,7 @@ public class FileHelper {
 					file.delete();
 				
 				FileOutputStream fos = new FileOutputStream(file);
-				bmp.compress(CompressFormat.JPEG, 100, fos);
+				bmp.compress(CompressFormat.PNG, 100, fos);
 				fos.flush();
 				fos.close();
 				
@@ -116,18 +88,58 @@ public class FileHelper {
 			}
 			catch(IOException e) {
 				e.printStackTrace();
-				return FileStatus.WRITE_FAILED;
 			}
 				
-			
+			return FileStatus.WRITE_FAILED;
 		}
 		else
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
-	public static String getDateFormat(String format) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat( format, Locale.US);
-        String date = dateFormat.format(new Date());
-        return date;
+	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {
+		
+		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
+		Matrix matrix = new Matrix();
+		matrix.postRotate( rotateAngle );
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+		return bitmap;
+		
+	}
+
+	public static FileStatus writeFileToSD(String dirName, String fileName, byte[] data) {
+		
+		String sdState = Environment.getExternalStorageState();
+		
+		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
+			
+			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+			
+			try {
+				File root = new File( sdCardDir );
+				
+				File dir = new File( root, dirName );
+				if(!dir.exists())
+					dir.mkdirs();
+				
+				File file = new File( dir, fileName );
+				
+				if(file.exists())
+					file.delete();
+				
+				FileOutputStream fos = new FileOutputStream(file);
+				fos.write(data);
+				fos.flush();
+				fos.close();
+				return FileStatus.WRITE_SUCCESSFUL;
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+				
+			}
+			
+			return FileStatus.WRITE_FAILED;
+		}
+		else
+			return FileStatus.SD_UNMOUNTED;
 	}
 }

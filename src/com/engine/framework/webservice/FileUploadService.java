@@ -113,10 +113,10 @@ public class FileUploadService extends AsyncTask<WebServiceInfo,Integer,Response
                       
                    while (bytesRead > 0) {
                         
-                     dos.write(buffer, 0, bufferSize);
-                     bytesAvailable = fileInputStream.available();
-                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                     bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
+	                     dos.write(buffer, 0, bufferSize);
+	                     bytesAvailable = fileInputStream.available();
+	                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+	                     bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
                      
                     }
           
