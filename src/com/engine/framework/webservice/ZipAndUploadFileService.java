@@ -1,8 +1,3 @@
-/**
- * Author: Ronald Phillip C. Cui
- * Reference Author: Napolean A. Patague
- * Date: Oct 13, 2013
- */
 package com.engine.framework.webservice;
 
 import java.io.DataOutputStream;
@@ -14,37 +9,38 @@ import java.net.URL;
 
 import org.apache.http.HttpStatus;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
 import com.engine.framework.enumerations.ResponseStatus;
+import com.engine.framework.helper.FileHelper;
+import com.engine.framework.helper.FileHelper.FileStatus;
 import com.engine.framework.webservice.interfaces.WebServiceListener;
 import com.engine.framework.webservice.response.Response;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
+public class ZipAndUploadFileService extends WebService {
 
-public class FileUploadService extends WebService {
-
-	public FileUploadService(int requestId) {
+	public ZipAndUploadFileService(int requestId) {
 		super(requestId);
 	}
 	
-	public FileUploadService setProgressDialog(ProgressDialog dialog) {
+	public ZipAndUploadFileService setProgressDialog(ProgressDialog dialog) {
 		super.setProgressDialog(dialog);
 		return this;
 	}
 	
-	public FileUploadService setProgressDialog(Context context, String title, String message) {
+	public ZipAndUploadFileService setProgressDialog(Context context, String title, String message) {
 		super.setProgressDialog(context, title, message);
 		return this;
 	}
-
 	
 	public ProgressDialog getProgressDialog() {
 		return super.getProgressDialog();
 	}
 	
-	public FileUploadService setWebServiceListener(WebServiceListener listener) {
+	public ZipAndUploadFileService setWebServiceListener(WebServiceListener listener) {
 		super.setWebServiceListener(listener);
 		return this;
 	}
@@ -57,10 +53,29 @@ public class FileUploadService extends WebService {
 	protected Response doInBackground(WebServiceInfo... params) {
 		
 		WebServiceInfo wsInfo = params[0];
-		File file = wsInfo.getUploadFile();
-		String fileName = file.getName();
+		String files[] = wsInfo.getUploadFiles();
+		String zipFileName = wsInfo.getZipFileName();
 		
 		Response response = new Response();
+		
+		if(files == null && zipFileName == null) {	
+			response.setStatus( ResponseStatus.FAILED, FileStatus.NO_FILES.toString() );
+			return response;
+		}
+		
+		if( FileHelper.getSDState() != Environment.MEDIA_MOUNTED ) {
+			response.setStatus( ResponseStatus.FAILED, FileStatus.SD_UNMOUNTED.toString() );
+			return response;
+		}
+		
+		FileStatus status = FileHelper.zipFile( files, zipFileName );
+		
+		if(status != FileStatus.WRITE_SUCCESSFUL) {
+			response.setStatus( ResponseStatus.FAILED, FileStatus.NO_FILES.toString() );
+			return response;
+		}
+		
+		File file = new File(zipFileName);
 		
 		if(file != null && file.isFile()) {
 			
@@ -88,13 +103,13 @@ public class FileUploadService extends WebService {
                    conn.setRequestProperty("Connection", "Keep-Alive");
                    conn.setRequestProperty("ENCTYPE", "multipart/form-data");
                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                   conn.setRequestProperty("uploaded_file", fileName ); 
+                   conn.setRequestProperty("uploaded_file", zipFileName ); 
                     
                    dos = new DataOutputStream(conn.getOutputStream());
           
                    dos.writeBytes(twoHyphens + boundary + lineEnd); 
                    dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                                             + fileName + "\"" + lineEnd);
+                                             + zipFileName + "\"" + lineEnd);
                     
                    dos.writeBytes(lineEnd);
           

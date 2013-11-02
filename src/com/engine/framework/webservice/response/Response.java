@@ -11,6 +11,7 @@ public class Response {
 
 	private ResponseStatus mStatus = ResponseStatus.FAILED;
 	private String mResult;
+	private String mMessage;
 	
 	public void setStatus(ResponseStatus status) {
 		mStatus = status;
@@ -27,6 +28,15 @@ public class Response {
 	
 	public String getResult() {
 		return mResult;
+	}
+
+	public void setStatus(ResponseStatus status, String message) {
+		mStatus = status;
+		mMessage = message;
+	}
+	
+	public String getStatusMessage() {
+		return mMessage;
 	}
 	
 }

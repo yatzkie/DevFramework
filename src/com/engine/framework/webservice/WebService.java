@@ -23,7 +23,7 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 	
 	private WebServiceListener mListener;
 	private ProgressDialog mDialog;
-	private int mRequestId = WebService.NO_ID;
+	protected int mRequestId = WebService.NO_ID;
 
 	public WebService(int requestId) {
 		mRequestId  = requestId;

@@ -1,14 +1,18 @@
 package com.engine.framework.helper;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Bitmap.CompressFormat;
@@ -25,7 +29,8 @@ public class FileHelper {
 		SD_UNMOUNTED("SD card not mounted"),
 		WRITE_FAILED("Failed to save file"),
 		READ_FAILED("Failed to read file"),
-		UNKNOWN_ERROR("Unexpected Error Occurred");
+		UNKNOWN_ERROR("Unexpected Error Occurred"), 
+		NO_FILES("No files");
 		
 		String status = "";
 		
@@ -38,6 +43,11 @@ public class FileHelper {
 		}
 		
 	}
+	
+	public static String getSDState() {
+		return Environment.getExternalStorageState();
+	}
+	
 	public static String getResponseString(InputStream source) throws IOException {
 
 		String result = "";
@@ -96,16 +106,6 @@ public class FileHelper {
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
-	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {
-		
-		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
-		Matrix matrix = new Matrix();
-		matrix.postRotate( rotateAngle );
-		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-		return bitmap;
-		
-	}
-
 	public static FileStatus writeFileToSD(String dirName, String fileName, byte[] data) {
 		
 		String sdState = Environment.getExternalStorageState();
@@ -142,4 +142,91 @@ public class FileHelper {
 		else
 			return FileStatus.SD_UNMOUNTED;
 	}
+	
+	public static FileStatus zipFile(String files[], String zipFileName) {
+		
+		int BUFFER = 2048;
+		
+		try {
+			
+            BufferedInputStream origin = null;
+            FileOutputStream dest = new FileOutputStream( zipFileName );
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
+                    dest));
+            byte data[] = new byte[BUFFER];
+ 
+            for (int i = 0; i < files.length; i++) {
+                System.out.println("Compress: " + "Adding: " + files[i]);
+                FileInputStream fi = new FileInputStream(files[i]);
+                origin = new BufferedInputStream(fi, BUFFER);
+ 
+                ZipEntry entry = new ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+ 
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+ 
+            out.close();
+            
+            return FileStatus.WRITE_SUCCESSFUL;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		return FileStatus.WRITE_FAILED;
+		
+	}
+
+	public void unzip(String _zipFile, String _targetLocation) {
+		 
+        //create target location folder if not exist
+        dirChecker(_targetLocation);
+        
+        try {
+            FileInputStream fin = new FileInputStream(_zipFile);
+            ZipInputStream zin = new ZipInputStream(fin);
+            ZipEntry ze = null;
+            while ((ze = zin.getNextEntry()) != null) {
+ 
+                //create dir if required while unzipping
+                if (ze.isDirectory()) {
+                    dirChecker(ze.getName());
+                } else {
+                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
+                    for (int c = zin.read(); c != -1; c = zin.read()) {
+                        fout.write(c);
+                    }
+ 
+                    zin.closeEntry();
+                    fout.close();
+                }
+ 
+            }
+            zin.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+	}
+	
+	private void dirChecker(String dir) {
+		// TODO Auto-generated method stub
+		File file = new File( dir );
+		file.mkdirs();
+	}
+
+	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {
+		
+		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
+		Matrix matrix = new Matrix();
+		matrix.postRotate( rotateAngle );
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+		return bitmap;
+		
+	}
+
 }

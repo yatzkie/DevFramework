@@ -22,6 +22,8 @@ public class WebServiceInfo {
 	private List<NameValuePair> mParam;
 	private String mExtra;
 	private File mUploadFile;
+	private String[] files;
+	private String zipPath;
 	
 	public WebServiceInfo(String url, Method method) {
 		mUrl = url;
@@ -77,5 +79,21 @@ public class WebServiceInfo {
 		return mUploadFile;
 	}
 	
+	public void setUploadFiles(String... files) {
+		this.files = files;
+	}
+	
+	public String[] getUploadFiles() {
+		return files;
+	}
+	
+	public void setZipFileName(String path){
+		zipPath = path;
+	}
+	
+	public String getZipFileName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
