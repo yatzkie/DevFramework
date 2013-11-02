@@ -6,14 +6,16 @@
 package com.engine.framework.enumerations;
 
 public enum Method {
-		POST,
-		GET;
+		POST("POST"),
+		GET("GET");
+		
+		private String method;
+		
+		Method(String method) {
+			this.method = method;
+		}
 		
 		public String toString() {
-			switch(this) {
-				case POST: return "POST";
-				case GET: return "GET";
-				default: return "";
-			}
+			return method;
 		}
 }

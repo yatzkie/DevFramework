@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.http.HttpStatus;
 
@@ -55,35 +56,38 @@ public class ZipAndUploadFileService extends WebService {
 		WebServiceInfo wsInfo = params[0];
 		String files[] = wsInfo.getUploadFiles();
 		String zipFileName = wsInfo.getZipFileName();
+		String zipDir = wsInfo.getZipDir();
 		
 		Response response = new Response();
 		
-		if(files == null && zipFileName == null) {	
+		if(files == null || zipFileName == null) {	
 			response.setStatus( ResponseStatus.FAILED, FileStatus.NO_FILES.toString() );
 			return response;
 		}
 		
-		if( FileHelper.getSDState() != Environment.MEDIA_MOUNTED ) {
+		if( !FileHelper.getSDState().equals(Environment.MEDIA_MOUNTED) ) {
 			response.setStatus( ResponseStatus.FAILED, FileStatus.SD_UNMOUNTED.toString() );
 			return response;
 		}
 		
-		FileStatus status = FileHelper.zipFile( files, zipFileName );
+		FileStatus status = FileHelper.zipFile( files, zipDir, zipFileName );
 		
 		if(status != FileStatus.WRITE_SUCCESSFUL) {
 			response.setStatus( ResponseStatus.FAILED, FileStatus.NO_FILES.toString() );
 			return response;
 		}
 		
-		File file = new File(zipFileName);
+		String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+		File file = new File( sdPath + "/" + zipDir + "/" + zipFileName );
 		
 		if(file != null && file.isFile()) {
 			
 			HttpURLConnection conn = null;
 			DataOutputStream dos = null;  
-			String lineEnd = "\r\n";
-			String twoHyphens = "--";
-			String boundary = "*****";
+			String lineEnd = FileHelper.LINE_END; 
+			String twoHyphens = FileHelper.TWO_HYPEN; 
+			String boundary = FileHelper.BOUNDARY; 
+			
 			int bytesRead, bytesAvailable, bufferSize;
 			byte[] buffer;
 			int maxBufferSize = 1 * 1024 * 1024;
@@ -91,28 +95,32 @@ public class ZipAndUploadFileService extends WebService {
 			try {
 				
 				 
-                   FileInputStream fileInputStream = new FileInputStream( file );
                    URL url = new URL( wsInfo.getUrl() );
                     
                    // Open a HTTP  connection to  the URL
                    conn = (HttpURLConnection) url.openConnection(); 
-                   conn.setDoInput(true); // Allow Inputs
                    conn.setDoOutput(true); // Allow Outputs
-                   conn.setUseCaches(false); // Don't use a Cached Copy
-                   conn.setRequestMethod("POST");
+                   conn.setRequestMethod(wsInfo.getMethod().toString());
                    conn.setRequestProperty("Connection", "Keep-Alive");
-                   conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                   conn.setRequestProperty("Cache-Control", "no-cache");
                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                   conn.setRequestProperty("uploaded_file", zipFileName ); 
-                    
+                  
                    dos = new DataOutputStream(conn.getOutputStream());
-          
+                  
+                   FileHelper.writeURLConnectionParam(dos, "app_name", "my_value");
+                  
                    dos.writeBytes(twoHyphens + boundary + lineEnd); 
                    dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                                             + zipFileName + "\"" + lineEnd);
-                    
+                                             + file.getName() + "\"" + lineEnd);
+                   dos.writeBytes("Content-Type: " + URLConnection.guessContentTypeFromName(file.getName()) + lineEnd);
+                   dos.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
+                   
                    dos.writeBytes(lineEnd);
           
+                   dos.flush();
+                   
+                   FileInputStream fileInputStream = new FileInputStream( file );
+                   
                    // create a buffer of  maximum size
                    bytesAvailable = fileInputStream.available(); 
           
@@ -128,7 +136,7 @@ public class ZipAndUploadFileService extends WebService {
 	                     bytesAvailable = fileInputStream.available();
 	                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
 	                     bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
-                     
+	                     publishProgress(bytesRead);
                     }
           
                    // send multipart form data necesssary after file data...
@@ -138,17 +146,19 @@ public class ZipAndUploadFileService extends WebService {
                    // Responses from the server (code and message)
                    int serverResponseCode = conn.getResponseCode();
                    String serverResponseMessage = conn.getResponseMessage();
-                   
+                   response.setResult( FileHelper.getResponseString( conn.getInputStream()));
                    Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
                    
                    if( serverResponseCode == HttpStatus.SC_OK ){
                 	    response.setStatus(ResponseStatus.SUCCESS);
+                	    
                    }    
                     
                    //close the streams //
                    fileInputStream.close();
                    dos.flush();
                    dos.close();
+                   conn.disconnect();
                    
            	    	return response;
 				

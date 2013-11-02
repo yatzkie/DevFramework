@@ -24,6 +24,7 @@ public class WebServiceInfo {
 	private File mUploadFile;
 	private String[] files;
 	private String zipPath;
+	private String zipDir;
 	
 	public WebServiceInfo(String url, Method method) {
 		mUrl = url;
@@ -93,7 +94,15 @@ public class WebServiceInfo {
 	
 	public String getZipFileName() {
 		// TODO Auto-generated method stub
-		return null;
+		return zipPath;
 	}
 	
+	public void setZipDir(String path){
+		zipDir = path;
+	}
+	
+	public String getZipDir() {
+		// TODO Auto-generated method stub
+		return zipDir;
+	}
 }

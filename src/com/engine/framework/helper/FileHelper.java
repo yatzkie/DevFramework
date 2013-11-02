@@ -3,6 +3,7 @@ package com.engine.framework.helper;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +22,10 @@ import android.os.Environment;
 
 public class FileHelper {
 	
-	
+	public static String TWO_HYPEN = "--";
+	public static String BOUNDARY = "*****";
+	public static String LINE_END = "\r\n";
+	 
 	public enum FileStatus {
 		
 		WRITE_SUCCESSFUL("Successfully saved file"),
@@ -143,14 +147,26 @@ public class FileHelper {
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
-	public static FileStatus zipFile(String files[], String zipFileName) {
+	public static FileStatus zipFile(String files[],String zipDirName, String zipFileName) {
 		
 		int BUFFER = 2048;
-		
+
+		String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+
 		try {
 			
+			File root = new File( sdCardDir );
+				
+			File dir = new File( root, zipDirName );
+			//File dir = new File( zipDirName );
+			
+			if(!dir.exists())
+				dir.mkdirs();
+			
+			File file = new File( dir, zipFileName );
+			
             BufferedInputStream origin = null;
-            FileOutputStream dest = new FileOutputStream( zipFileName );
+            FileOutputStream dest = new FileOutputStream( file );
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
                     dest));
             byte data[] = new byte[BUFFER];
@@ -227,6 +243,17 @@ public class FileHelper {
 		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
 		return bitmap;
 		
+	}
+
+	public static void writeURLConnectionParam(DataOutputStream dos, String paramName, String value ) throws IOException {
+		// TODO Auto-generated method stub
+		 
+		 dos.writeBytes( TWO_HYPEN + BOUNDARY + LINE_END );
+         dos.writeBytes("Content-Disposition: form-data; name=\"" + paramName + "\"" + LINE_END);
+         dos.writeBytes("Content-Type: text/plain; charset=UTF-8" + LINE_END);
+         dos.writeBytes(LINE_END);
+         dos.writeBytes(value + LINE_END);
+         dos.flush();
 	}
 
 }
