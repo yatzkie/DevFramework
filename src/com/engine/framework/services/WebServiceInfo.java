@@ -3,7 +3,7 @@
  * Reference Author: Napolean A. Patague
  * Date: Oct 13, 2013
  */
-package com.engine.framework.webservice;
+package com.engine.framework.services;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,11 +49,10 @@ public class WebServiceInfo {
 		return mMethod;
 	}
 	
-	public WebServiceInfo addParam(BasicNameValuePair param) {
+	public WebServiceInfo addParam(String name, String value) {
 		
 		if(mParam == null) mParam = new ArrayList<NameValuePair>();
-		
-		mParam.add(param);
+		mParam.add(new BasicNameValuePair( name, value));
 		
 		return this;
 	}

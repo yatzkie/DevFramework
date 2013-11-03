@@ -3,7 +3,7 @@
  * Reference Author: Napolean A. Patague
  * Date: Oct 13, 2013
  */
-package com.engine.framework.webservice;
+package com.engine.framework.services;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -11,16 +11,18 @@ import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 
 import com.engine.framework.enumerations.ResponseStatus;
-import com.engine.framework.webservice.interfaces.WebServiceListener;
-import com.engine.framework.webservice.response.Response;
+import com.engine.framework.helper.FileHelper;
+import com.engine.framework.services.interfaces.ServiceListener;
+import com.engine.framework.services.response.Response;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 public class FileUploadService extends WebService {
@@ -44,13 +46,13 @@ public class FileUploadService extends WebService {
 		return super.getProgressDialog();
 	}
 	
-	public FileUploadService setWebServiceListener(WebServiceListener listener) {
-		super.setWebServiceListener(listener);
+	public FileUploadService setServiceListener(ServiceListener listener) {
+		super.setServiceListener(listener);
 		return this;
 	}
 	
-	public WebServiceListener getWebServiceListener() {
-		return super.getWebServiceListener();
+	public ServiceListener getServiceListener() {
+		return super.getServiceListener();
 	}
 	
 	@Override
@@ -58,7 +60,6 @@ public class FileUploadService extends WebService {
 		
 		WebServiceInfo wsInfo = params[0];
 		File file = wsInfo.getUploadFile();
-		String fileName = file.getName();
 		
 		Response response = new Response();
 		
@@ -66,9 +67,10 @@ public class FileUploadService extends WebService {
 			
 			HttpURLConnection conn = null;
 			DataOutputStream dos = null;  
-			String lineEnd = "\r\n";
-			String twoHyphens = "--";
-			String boundary = "*****";
+			String lineEnd = FileHelper.LINE_END; 
+			String twoHyphens = FileHelper.TWO_HYPEN; 
+			String boundary = FileHelper.BOUNDARY; 
+			
 			int bytesRead, bytesAvailable, bufferSize;
 			byte[] buffer;
 			int maxBufferSize = 1 * 1024 * 1024;
@@ -76,28 +78,37 @@ public class FileUploadService extends WebService {
 			try {
 				
 				 
-                   FileInputStream fileInputStream = new FileInputStream( file );
                    URL url = new URL( wsInfo.getUrl() );
                     
                    // Open a HTTP  connection to  the URL
                    conn = (HttpURLConnection) url.openConnection(); 
-                   conn.setDoInput(true); // Allow Inputs
                    conn.setDoOutput(true); // Allow Outputs
-                   conn.setUseCaches(false); // Don't use a Cached Copy
-                   conn.setRequestMethod("POST");
+                   conn.setRequestMethod(wsInfo.getMethod().toString());
                    conn.setRequestProperty("Connection", "Keep-Alive");
-                   conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                   conn.setRequestProperty("Cache-Control", "no-cache");
                    conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                   conn.setRequestProperty("uploaded_file", fileName ); 
-                    
+                  
                    dos = new DataOutputStream(conn.getOutputStream());
-          
+                  
+                   if(wsInfo.getParam() != null) {
+                	   for(NameValuePair param : wsInfo.getParam()) {
+                		   FileHelper.writeURLConnectionParam(dos, param.getName(), param.getValue());
+                	   }
+                   }
+                   
+                  
                    dos.writeBytes(twoHyphens + boundary + lineEnd); 
                    dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                                             + fileName + "\"" + lineEnd);
-                    
+                                             + file.getName() + "\"" + lineEnd);
+                   dos.writeBytes("Content-Type: " + URLConnection.guessContentTypeFromName(file.getName()) + lineEnd);
+                   dos.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
+                   
                    dos.writeBytes(lineEnd);
           
+                   dos.flush();
+                   
+                   FileInputStream fileInputStream = new FileInputStream( file );
+                   
                    // create a buffer of  maximum size
                    bytesAvailable = fileInputStream.available(); 
           
@@ -113,7 +124,7 @@ public class FileUploadService extends WebService {
 	                     bytesAvailable = fileInputStream.available();
 	                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
 	                     bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
-                     
+	                     publishProgress(bytesRead);
                     }
           
                    // send multipart form data necesssary after file data...
@@ -123,17 +134,19 @@ public class FileUploadService extends WebService {
                    // Responses from the server (code and message)
                    int serverResponseCode = conn.getResponseCode();
                    String serverResponseMessage = conn.getResponseMessage();
-                   
+                   response.setResult( FileHelper.getResponseString( conn.getInputStream()));
                    Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
                    
                    if( serverResponseCode == HttpStatus.SC_OK ){
                 	    response.setStatus(ResponseStatus.SUCCESS);
+                	    
                    }    
                     
                    //close the streams //
                    fileInputStream.close();
                    dos.flush();
                    dos.close();
+                   conn.disconnect();
                    
            	    	return response;
 				

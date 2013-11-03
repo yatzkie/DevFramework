@@ -150,14 +150,10 @@ public class FileHelper {
 	public static FileStatus zipFile(String files[],String zipDirName, String zipFileName) {
 		
 		int BUFFER = 2048;
-
-		String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-
+	
 		try {
 			
-			File root = new File( sdCardDir );
-				
-			File dir = new File( root, zipDirName );
+			File dir = new File( zipDirName );
 			//File dir = new File( zipDirName );
 			
 			if(!dir.exists())
@@ -172,6 +168,7 @@ public class FileHelper {
             byte data[] = new byte[BUFFER];
  
             for (int i = 0; i < files.length; i++) {
+            	
                 System.out.println("Compress: " + "Adding: " + files[i]);
                 FileInputStream fi = new FileInputStream(files[i]);
                 origin = new BufferedInputStream(fi, BUFFER);
@@ -183,7 +180,9 @@ public class FileHelper {
                 while ((count = origin.read(data, 0, BUFFER)) != -1) {
                     out.write(data, 0, count);
                 }
+                
                 origin.close();
+                
             }
  
             out.close();
@@ -198,13 +197,14 @@ public class FileHelper {
 		
 	}
 
-	public void unzip(String _zipFile, String _targetLocation) {
+	public void unzip(String zipFile, String targetLocation) {
 		 
         //create target location folder if not exist
-        dirChecker(_targetLocation);
+        dirChecker(targetLocation);
         
         try {
-            FileInputStream fin = new FileInputStream(_zipFile);
+        	
+            FileInputStream fin = new FileInputStream(zipFile);
             ZipInputStream zin = new ZipInputStream(fin);
             ZipEntry ze = null;
             while ((ze = zin.getNextEntry()) != null) {
@@ -213,7 +213,7 @@ public class FileHelper {
                 if (ze.isDirectory()) {
                     dirChecker(ze.getName());
                 } else {
-                    FileOutputStream fout = new FileOutputStream(_targetLocation + ze.getName());
+                    FileOutputStream fout = new FileOutputStream(targetLocation + ze.getName());
                     for (int c = zin.read(); c != -1; c = zin.read()) {
                         fout.write(c);
                     }
@@ -232,7 +232,7 @@ public class FileHelper {
 	private void dirChecker(String dir) {
 		// TODO Auto-generated method stub
 		File file = new File( dir );
-		file.mkdirs();
+		if(file.exists()) file.mkdirs();
 	}
 
 	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {

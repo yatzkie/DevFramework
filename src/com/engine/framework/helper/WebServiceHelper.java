@@ -19,7 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.engine.framework.enumerations.Method;
-import com.engine.framework.webservice.WebServiceInfo;
+import com.engine.framework.services.WebServiceInfo;
 
 public class WebServiceHelper {
 

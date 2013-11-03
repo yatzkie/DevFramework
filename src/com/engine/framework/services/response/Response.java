@@ -3,7 +3,7 @@
  * Reference Author: Napolean A. Patague
  * Date: Oct 13, 2013
  */
-package com.engine.framework.webservice.response;
+package com.engine.framework.services.response;
 
 import com.engine.framework.enumerations.ResponseStatus;
 
