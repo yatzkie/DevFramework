@@ -3,15 +3,15 @@
  * Reference Author: Napolean A. Patague
  * Date: Oct 13, 2013
  */
-package com.engine.framework.webservice;
+package com.engine.framework.services;
 
 import java.io.InputStream;
 
 import com.engine.framework.enumerations.ResponseStatus;
 import com.engine.framework.helper.FileHelper;
 import com.engine.framework.helper.WebServiceHelper;
-import com.engine.framework.webservice.interfaces.WebServiceListener;
-import com.engine.framework.webservice.response.Response;
+import com.engine.framework.services.interfaces.ServiceListener;
+import com.engine.framework.services.response.Response;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -19,11 +19,9 @@ import android.os.AsyncTask;
 
 public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 
-	public static final int NO_ID = -1;
-	
-	private WebServiceListener mListener;
+	private ServiceListener mListener;
 	private ProgressDialog mDialog;
-	protected int mRequestId = WebService.NO_ID;
+	protected int mRequestId;
 
 	public WebService(int requestId) {
 		mRequestId  = requestId;
@@ -47,12 +45,12 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 		return mDialog;
 	}
 	
-	public WebService setWebServiceListener(WebServiceListener listener) {
+	public WebService setServiceListener(ServiceListener listener) {
 		mListener = listener;
 		return this;
 	}
 	
-	public WebServiceListener getWebServiceListener() {
+	public ServiceListener getServiceListener() {
 		return mListener;
 	}
 	
@@ -93,10 +91,8 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 	}
 	
 	@Override
-	protected void onProgressUpdate(Integer... progress) {
-		
+	protected void onProgressUpdate(Integer... progress) {	
 		if( mListener != null ) mListener.onProgressUpdate(progress);
-		
 	}
 
 	@Override 
@@ -104,7 +100,7 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 		
 		if(mDialog != null) mDialog.dismiss();
 		
-		if( mListener != null ) mListener.webserviceCallback(response, mRequestId);
+		if( mListener != null ) mListener.serviceCallback(response, mRequestId);
 		
 	}
 	
