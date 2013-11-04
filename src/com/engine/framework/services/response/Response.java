@@ -15,6 +15,7 @@ public class Response {
 	
 	public void setStatus(ResponseStatus status) {
 		mStatus = status;
+		mMessage = status.toString();
 	}
 	
 	public ResponseStatus getStatus() {

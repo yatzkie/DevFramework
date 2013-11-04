@@ -1,6 +1,9 @@
 package com.engine.framework.services;
 
 import java.io.File;
+import java.util.ArrayList;
+
+import com.engine.framework.enumerations.FileType;
 
 public class FileServiceInfo {
 	
@@ -9,6 +12,7 @@ public class FileServiceInfo {
 	private String[] files;
 	private String zipDir;
 	private String zipPath;
+	private ArrayList<FileData> toSaveList;
 
 	public void setFile(File file) {
 		mFile = file;
@@ -43,4 +47,17 @@ public class FileServiceInfo {
 		// TODO Auto-generated method stub
 		return zipDir;
 	}
+	
+	public void addFileToSave(String dir, String fileName, byte data[], FileType type) {
+		
+		if(toSaveList == null) toSaveList = new ArrayList<FileData>();
+		
+		toSaveList.add(new FileData(dir,fileName,data,type));
+		
+	}
+	
+	public ArrayList<FileData> getFilesToSave() {
+		return toSaveList;
+	}
+	
 }

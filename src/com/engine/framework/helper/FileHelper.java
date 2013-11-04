@@ -3,6 +3,7 @@ package com.engine.framework.helper;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,22 +70,23 @@ public class FileHelper {
 		
 	}
 	
-	public static FileStatus saveImageToSD(String dirName, String fileName, byte[] data) {
+	public static FileStatus saveImage(String dirName, String fileName, byte[] data) {
 		
 		
 		String sdState = Environment.getExternalStorageState();
 		
 		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
 			
-			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+//			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 			
 			try {
 				
 				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 				
-				File root = new File( sdCardDir );
+//				File root = new File( sdCardDir );
 				
-				File dir = new File( root, dirName );
+				File dir = new File( dirName );
+				
 				if(!dir.exists())
 					dir.mkdirs();
 				
@@ -110,18 +112,20 @@ public class FileHelper {
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
-	public static FileStatus writeFileToSD(String dirName, String fileName, byte[] data) {
+	public static FileStatus saveFile(String dirName, String fileName, byte[] data) {
 		
 		String sdState = Environment.getExternalStorageState();
 		
 		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
 			
-			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+//			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 			
 			try {
-				File root = new File( sdCardDir );
 				
-				File dir = new File( root, dirName );
+//				File root = new File( sdCardDir );
+				
+				File dir = new File( dirName );
+				
 				if(!dir.exists())
 					dir.mkdirs();
 				
@@ -154,7 +158,6 @@ public class FileHelper {
 		try {
 			
 			File dir = new File( zipDirName );
-			//File dir = new File( zipDirName );
 			
 			if(!dir.exists())
 				dir.mkdirs();
@@ -245,6 +248,14 @@ public class FileHelper {
 		
 	}
 
+	public static byte[] getByteArray(Bitmap src, Bitmap.CompressFormat format, int quality) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		src.compress(format, quality, os);
+ 
+		return os.toByteArray();
+		
+	}
+	
 	public static void writeURLConnectionParam(DataOutputStream dos, String paramName, String value ) throws IOException {
 		// TODO Auto-generated method stub
 		 

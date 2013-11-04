@@ -18,6 +18,7 @@ import org.apache.http.NameValuePair;
 
 import com.engine.framework.enumerations.ResponseStatus;
 import com.engine.framework.helper.FileHelper;
+import com.engine.framework.helper.FileHelper.FileStatus;
 import com.engine.framework.services.interfaces.ServiceListener;
 import com.engine.framework.services.response.Response;
 
@@ -95,10 +96,9 @@ public class FileUploadService extends WebService {
                 		   FileHelper.writeURLConnectionParam(dos, param.getName(), param.getValue());
                 	   }
                    }
-                   
-                  
+                     
                    dos.writeBytes(twoHyphens + boundary + lineEnd); 
-                   dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
+                   dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\""
                                              + file.getName() + "\"" + lineEnd);
                    dos.writeBytes("Content-Type: " + URLConnection.guessContentTypeFromName(file.getName()) + lineEnd);
                    dos.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
@@ -125,6 +125,7 @@ public class FileUploadService extends WebService {
 	                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
 	                     bytesRead = fileInputStream.read(buffer, 0, bufferSize); 
 	                     publishProgress(bytesRead);
+	                     
                     }
           
                    // send multipart form data necesssary after file data...
@@ -134,12 +135,12 @@ public class FileUploadService extends WebService {
                    // Responses from the server (code and message)
                    int serverResponseCode = conn.getResponseCode();
                    String serverResponseMessage = conn.getResponseMessage();
-                   response.setResult( FileHelper.getResponseString( conn.getInputStream()));
+                   response.setResult( FileHelper.getResponseString( conn.getInputStream()) );
+                   
                    Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
                    
                    if( serverResponseCode == HttpStatus.SC_OK ){
                 	    response.setStatus(ResponseStatus.SUCCESS);
-                	    
                    }    
                     
                    //close the streams //
@@ -160,7 +161,7 @@ public class FileUploadService extends WebService {
 			
 		}
 		
-		response.setStatus(ResponseStatus.FAILED);
+		response.setStatus(ResponseStatus.FAILED, FileStatus.NO_FILES.toString() );
 		
 		return response;
 	}
