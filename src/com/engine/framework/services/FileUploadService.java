@@ -96,7 +96,8 @@ public class FileUploadService extends WebService {
                 		   FileHelper.writeURLConnectionParam(dos, param.getName(), param.getValue());
                 	   }
                    }
-                     
+                   
+                   
                    dos.writeBytes(twoHyphens + boundary + lineEnd); 
                    dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\""
                                              + file.getName() + "\"" + lineEnd);

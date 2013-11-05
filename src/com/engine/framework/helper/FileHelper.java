@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLConnection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -267,4 +268,17 @@ public class FileHelper {
          dos.flush();
 	}
 
+	
+	public static void addUploadFileURLConnection(DataOutputStream dos, String paramName, String fileName) throws IOException {
+		
+		dos.writeBytes( TWO_HYPEN + BOUNDARY + LINE_END ); 
+        dos.writeBytes("Content-Disposition: form-data; name=\""+ paramName + "\";filename=\""
+                                  + fileName + "\"" + LINE_END );
+        dos.writeBytes("Content-Type: " + URLConnection.guessContentTypeFromName( fileName ) + LINE_END);
+        dos.writeBytes("Content-Transfer-Encoding: binary" + LINE_END );
+        
+        dos.writeBytes(LINE_END);
+
+        dos.flush();
+	}
 }
