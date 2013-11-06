@@ -119,12 +119,8 @@ public class FileHelper {
 		
 		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
 			
-//			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-			
 			try {
-				
-//				File root = new File( sdCardDir );
-				
+			
 				File dir = new File( dirName );
 				
 				if(!dir.exists())
@@ -152,6 +148,38 @@ public class FileHelper {
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
+	public static FileStatus appendToFile(String dirName, String fileName, byte[] data) {
+		
+		String sdState = Environment.getExternalStorageState();
+		
+		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
+			
+			try {
+			
+				File dir = new File( dirName );
+				
+				if(!dir.exists())
+					dir.mkdirs();
+				
+				File file = new File( dir, fileName );
+				
+				FileOutputStream fos = new FileOutputStream(file, true);
+				fos.write(data);
+				fos.flush();
+				fos.close();
+				return FileStatus.WRITE_SUCCESSFUL;
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+				
+			}
+			
+			return FileStatus.WRITE_FAILED;
+		}
+		else
+			return FileStatus.SD_UNMOUNTED;
+	}
+
 	public static FileStatus zipFile(String files[],String zipDirName, String zipFileName) {
 		
 		int BUFFER = 2048;
@@ -177,7 +205,7 @@ public class FileHelper {
                 FileInputStream fi = new FileInputStream(files[i]);
                 origin = new BufferedInputStream(fi, BUFFER);
  
-                ZipEntry entry = new ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1));
+                ZipEntry entry = new ZipEntry( files[i].substring(files[i].lastIndexOf("/") + 1));
                 out.putNextEntry(entry);
                 int count;
  
@@ -245,6 +273,13 @@ public class FileHelper {
 		Matrix matrix = new Matrix();
 		matrix.postRotate( rotateAngle );
 		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+		return bitmap;
+		
+	}
+
+	public static Bitmap scaleImage(Bitmap bitmap, int width, int height) {
+		
+		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
 		return bitmap;
 		
 	}

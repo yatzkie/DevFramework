@@ -5,9 +5,11 @@
 package com.engine.framework.views;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,6 +30,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		
 		mCamera = camera;
 		mCamera.setDisplayOrientation(90);
+     
 		initCamera();
 	}
 	

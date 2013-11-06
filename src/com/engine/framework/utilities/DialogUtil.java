@@ -57,6 +57,24 @@ public class DialogUtil {
 		AlertDialog dialog = dialogBuilder.create();
 		dialog.show();				   	
 		
-}
+	}
+	
+	public static void showListDialog(Context context, String title, String[] values, OnClickListener listener) {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+	    builder.setTitle(title)
+	           .setItems(values, listener);
+	    builder.setPositiveButton("Cancel", new OnClickListener() {
+	    	
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+			   
+		   });
+	    AlertDialog dialog = builder.create();
+		dialog.show();	
+	}
 	
 }

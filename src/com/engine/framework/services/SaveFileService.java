@@ -38,6 +38,10 @@ public class SaveFileService extends FileService {
 				else if(fileData.getFileType() == FileType.TEXT){
 					status = FileHelper.saveFile( dir , fileName, data );
 				}
+				else if(fileData.getFileType() == FileType.TEXT_APPEND ) {
+					status = FileHelper.appendToFile( dir , fileName, data );
+				}
+				
 				
 				if(status != FileStatus.WRITE_SUCCESSFUL) {
 					response.setStatus(ResponseStatus.FAILED, status.toString());
