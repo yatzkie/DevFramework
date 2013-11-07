@@ -60,6 +60,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return mDatabase;
 	}
 	
+	
+	public void close() {
+		dbManager = null;
+		super.close();
+	}
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		

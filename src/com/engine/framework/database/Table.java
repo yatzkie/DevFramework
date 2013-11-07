@@ -28,25 +28,25 @@ public abstract class Table {
 	public int update(ContentValues values, String filter) {
 		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.update( getName(), values, filter, null);
-		return 0;
+		return -1;
 	}
 	
 	public int update(ContentValues values, String whereClause, String[] filterValues) {
 		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.update( getName(), values, whereClause, filterValues );
-		return 0;
+		return -1;
 	}
 	
-	public int delete(ContentValues values, String filter) {
+	public int delete() {
 		db = DatabaseHelper.getInstance().getWritableDatabase();
-		if(db != null) return db.delete( getName(), filter, null);
-		return 0;
+		if(db != null) return db.delete( getName(), null, null);
+		return -1;
 	}
 	
-	public int delete(ContentValues values, String whereClause, String[] filterValues) {
+	public int delete(String whereClause, String[] filterValues) {
 		db = DatabaseHelper.getInstance().getWritableDatabase();
 		if(db != null) return db.delete( getName(), whereClause, filterValues);
-		return 0;
+		return -1;
 	}
 	
 	public Cursor select() {

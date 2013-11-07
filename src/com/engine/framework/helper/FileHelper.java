@@ -78,14 +78,10 @@ public class FileHelper {
 		
 		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
 			
-//			String sdCardDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-			
 			try {
 				
 				Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-				
-//				File root = new File( sdCardDir );
-				
+								
 				File dir = new File( dirName );
 				
 				if(!dir.exists())
@@ -113,6 +109,42 @@ public class FileHelper {
 			return FileStatus.SD_UNMOUNTED;
 	}
 	
+	public static FileStatus saveImage(String dirName, String fileName, Bitmap bitmap) {
+		
+		
+		String sdState = Environment.getExternalStorageState();
+		
+		if(sdState.equals( Environment.MEDIA_MOUNTED) ) {
+			
+			try {
+								
+				File dir = new File( dirName );
+				
+				if(!dir.exists())
+					dir.mkdirs();
+				
+				File file = new File( dir, fileName );
+				
+				if(file.exists())
+					file.delete();
+				
+				FileOutputStream fos = new FileOutputStream(file);
+				bitmap.compress(CompressFormat.PNG, 100, fos);
+				fos.flush();
+				fos.close();
+				
+				return FileStatus.WRITE_SUCCESSFUL;
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
+				
+			return FileStatus.WRITE_FAILED;
+		}
+		else
+			return FileStatus.SD_UNMOUNTED;
+	}
+
 	public static FileStatus saveFile(String dirName, String fileName, byte[] data) {
 		
 		String sdState = Environment.getExternalStorageState();
@@ -195,8 +227,7 @@ public class FileHelper {
 			
             BufferedInputStream origin = null;
             FileOutputStream dest = new FileOutputStream( file );
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
-                    dest));
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream( dest ));
             byte data[] = new byte[BUFFER];
  
             for (int i = 0; i < files.length; i++) {
@@ -205,7 +236,7 @@ public class FileHelper {
                 FileInputStream fi = new FileInputStream(files[i]);
                 origin = new BufferedInputStream(fi, BUFFER);
  
-                ZipEntry entry = new ZipEntry( files[i].substring(files[i].lastIndexOf("/") + 1));
+                ZipEntry entry = new ZipEntry( /*zipFileName.replace(".zip", "/") + */ files[i].substring(files[i].lastIndexOf("/") + 1));
                 out.putNextEntry(entry);
                 int count;
  
@@ -315,5 +346,15 @@ public class FileHelper {
         dos.writeBytes(LINE_END);
 
         dos.flush();
+	}
+	
+	public static void deleteDir(File fileOrDirectory) {
+		
+	    if (fileOrDirectory.isDirectory())
+	        for (File child : fileOrDirectory.listFiles())
+	        	deleteDir(child);
+
+	    fileOrDirectory.delete();
+	    
 	}
 }

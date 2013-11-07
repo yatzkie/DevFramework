@@ -14,6 +14,9 @@ public class DialogUtil {
 		CUSTOM
 	}
 	
+	public static final int OK = 1;
+	public static final int CANCEL = 0;
+	
 	AlertDialog.Builder dialogBuilder;
 	
 	public static void showAlertDialog(Context context, String title, String message) {
@@ -30,7 +33,7 @@ public class DialogUtil {
 										dialog.dismiss();
 									}
 									   
-								   });
+						 });
 			
 			AlertDialog dialog = dialogBuilder.create();
 			dialog.show();				   	
@@ -59,6 +62,31 @@ public class DialogUtil {
 		
 	}
 	
+	public static void showConfirmationDialog(Context context, String title, String message, final OnClickListener listener) {
+		
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+		dialogBuilder.setTitle(title);
+		dialogBuilder.setMessage(message);
+		dialogBuilder.setCancelable(false);
+		dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				listener.onClick(dialog, OK);
+			}
+		} );
+		dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				listener.onClick(dialog, CANCEL);
+			}
+		} );
+		AlertDialog dialog = dialogBuilder.create();
+		dialog.show();				   	
+		
+	}
+
 	public static void showListDialog(Context context, String title, String[] values, OnClickListener listener) {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
