@@ -2,3 +2,9 @@
 bin/devframework.jar
 
 *.class
+
+bin/classes/com/engine/framework/database/Table.class
+
+*.class
+
+*.class
