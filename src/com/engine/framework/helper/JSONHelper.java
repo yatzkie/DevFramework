@@ -10,7 +10,7 @@ public class JSONHelper {
 		
 		try {
 			
-			return new JSONArray(jsonString).get(index).toString();
+			return jsonString != null ? new JSONArray(jsonString).get(index).toString() : "";
 			
 		} 
 		catch (JSONException e) {
@@ -26,7 +26,7 @@ public class JSONHelper {
 		
 		try {
 			
-			return new JSONObject(jsonString).getString(key);
+			return jsonString != null ? new JSONObject(jsonString).getString(key) : "";
 			
 		} 
 		catch (JSONException e) {
@@ -35,5 +35,6 @@ public class JSONHelper {
 		}
 		
 		return "";
+		
 	}
 }

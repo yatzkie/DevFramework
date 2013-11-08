@@ -46,7 +46,6 @@ public class DialogUtil {
 		dialogBuilder.setTitle(title);
 		dialogBuilder.setMessage(message);
 		dialogBuilder.setCancelable(false);
-		dialogBuilder.setOnDismissListener(listener);
 		dialogBuilder.setPositiveButton("OK", new OnClickListener() {
 
 								@Override
@@ -58,6 +57,7 @@ public class DialogUtil {
 							   });
 		
 		AlertDialog dialog = dialogBuilder.create();
+		dialog.setOnDismissListener(listener);
 		dialog.show();				   	
 		
 	}
