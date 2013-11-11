@@ -135,15 +135,26 @@ public class FileUploadService extends WebService {
           
                    // Responses from the server (code and message)
                    int serverResponseCode = conn.getResponseCode();
-                   String serverResponseMessage = conn.getResponseMessage();
-                   response.setResult( FileHelper.getResponseString( conn.getInputStream()) );
-                   
-                   Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
-                   
+                  
                    if( serverResponseCode == HttpStatus.SC_OK ){
+                	   
                 	    response.setStatus(ResponseStatus.SUCCESS);
+                	    
+                	    String serverResponseMessage = conn.getResponseMessage();
+                        response.setResult( FileHelper.getResponseString( conn.getInputStream()) );
+                        
+                        Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
+                        
                    }    
-                    
+                   else {
+                	   
+                	   response.setStatus(ResponseStatus.FAILED);
+                	   
+                	   String serverResponseMessage = conn.getResponseMessage();
+                	   response.setResult( FileHelper.getResponseString( conn.getErrorStream() ) );
+                	   
+                	   Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);  
+                   }
                    //close the streams //
                    fileInputStream.close();
                    dos.flush();

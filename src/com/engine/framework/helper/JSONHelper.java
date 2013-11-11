@@ -10,7 +10,7 @@ public class JSONHelper {
 		
 		try {
 			
-			return jsonString != null ? new JSONArray(jsonString).get(index).toString() : "";
+			return jsonString != null ? new JSONArray(jsonString).get(index).toString() : "Unexpected Error Occured";
 			
 		} 
 		catch (JSONException e) {
@@ -26,7 +26,7 @@ public class JSONHelper {
 		
 		try {
 			
-			return jsonString != null ? new JSONObject(jsonString).getString(key) : "";
+			return jsonString != null ? new JSONObject(jsonString).getString(key) : "Unexpected Error Occured";
 			
 		} 
 		catch (JSONException e) {

@@ -83,6 +83,8 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			response.setStatus(ResponseStatus.FAILED, e.getMessage() );
+			return response;
 		}
 		
 		response.setStatus(ResponseStatus.FAILED);

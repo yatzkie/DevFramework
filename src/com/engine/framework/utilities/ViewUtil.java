@@ -17,7 +17,7 @@ public class ViewUtil {
 		
 	}
 	
-	public static boolean isInputEqualTo(EditText editText, int input) {
+	public static boolean isInputEqualTo(EditText editText, double input) {
 		
 		if(Double.parseDouble( editText.getText().toString() ) == input)
 			return true;
