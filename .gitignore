@@ -8,3 +8,5 @@ bin/classes/com/engine/framework/database/Table.class
 *.class
 
 *.class
+
+bin/classes/com/engine/framework/activity/EngineActivity.class
