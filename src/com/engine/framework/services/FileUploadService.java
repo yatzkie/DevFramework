@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -164,12 +165,25 @@ public class FileUploadService extends WebService {
            	    	return response;
 				
 			}
-			catch(MalformedURLException e) {
+			catch(UnknownHostException e) {
+				
 				e.printStackTrace();
+				response.setStatus(ResponseStatus.FAILED, "Unable to connect to server" );
+				return response;
+				
+			}
+			catch(MalformedURLException e) {
+				
+				e.printStackTrace();
+				response.setStatus(ResponseStatus.FAILED, "Invalid Url" );
+				return response;
 			}
 			catch(Exception e) {
 				e.printStackTrace();
+				response.setStatus(ResponseStatus.FAILED, e.getMessage() != null ? e.getMessage() : "Unexpected Error Occured" );
+				return response;
 			}
+			
 			
 		}
 		

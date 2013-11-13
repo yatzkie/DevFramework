@@ -6,6 +6,8 @@
 package com.engine.framework.services;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 
 import com.engine.framework.enumerations.ResponseStatus;
 import com.engine.framework.helper.FileHelper;
@@ -81,13 +83,26 @@ public class WebService extends AsyncTask<WebServiceInfo,Integer,Response> {
 			}
 			
 		}
+		catch(UnknownHostException e) {
+			
+			e.printStackTrace();
+			response.setStatus(ResponseStatus.FAILED, "Unable to connect to server" );
+			return response;
+			
+		}
+		catch(MalformedURLException e) {
+			
+			e.printStackTrace();
+			response.setStatus(ResponseStatus.FAILED, "Invalid Url" );
+			return response;
+		}
 		catch(Exception e) {
 			e.printStackTrace();
-			response.setStatus(ResponseStatus.FAILED, e.getMessage() );
+			response.setStatus(ResponseStatus.FAILED, e.getMessage() != null ? e.getMessage() : "Unexpected Error Occured" );
 			return response;
 		}
 		
-		response.setStatus(ResponseStatus.FAILED);
+		response.setStatus(ResponseStatus.FAILED, "Unexpected Error Occured");
 		
 		return response;
 	}
