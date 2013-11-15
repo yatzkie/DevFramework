@@ -32,9 +32,9 @@ public class JSONHelper {
 		catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "Invalid JSON Format";
 		}
 		
-		return "";
 		
 	}
 }
