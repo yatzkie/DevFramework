@@ -1,6 +1,8 @@
 package com.engine.framework.utilities;
 
+import android.R;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -105,5 +107,12 @@ public class DialogUtil {
 		dialog.show();	
 	}
 	
-	
+	public static Dialog getCustomDialog(Context context, int resId, String title) {
+		
+		Dialog dialog = new Dialog(context);
+		dialog.setTitle(title);
+		dialog.setContentView(resId);
+		return dialog;
+		
+	}
 }
