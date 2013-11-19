@@ -20,7 +20,7 @@ import android.widget.Toast;
  * This class assumes the parent layout is RelativeLayout.LayoutParams.
  */
 public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
-    private static boolean DEBUGGING = false;
+    private static boolean DEBUGGING = true;
     private static final String LOG_TAG = "CameraPreviewSample";
     private static final String CAMERA_PARAM_ORIENTATION = "orientation";
     private static final String CAMERA_PARAM_LANDSCAPE = "landscape";
@@ -326,8 +326,8 @@ public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
             mCamera.setDisplayOrientation(angle);
         }
 
-        //cameraParams.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-        //cameraParams.setPictureSize(mPictureSize.width, mPictureSize.height);
+        cameraParams.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+        cameraParams.setPictureSize(mPictureSize.width, mPictureSize.height);
         
         if (DEBUGGING) {
             Log.v(LOG_TAG, "Preview Actual Size - w: " + mPreviewSize.width + ", h: " + mPreviewSize.height);

@@ -57,7 +57,7 @@ public abstract class Table {
 	
 	public Cursor select(String filter,String[] filterValues) {
 		db = DatabaseHelper.getInstance().getReadableDatabase();
-		if(db != null) return db.rawQuery( "SELECT * FROM " + getName(), filterValues );
+		if(db != null) return db.rawQuery( "SELECT * FROM " + getName() + " where " + filter, filterValues );
 		return null;
 	}
 	
