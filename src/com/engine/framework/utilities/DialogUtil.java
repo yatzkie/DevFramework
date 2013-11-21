@@ -63,6 +63,27 @@ public class DialogUtil {
 		
 	}
 	
+	public static void showAlertDialog(Context context, String title, String message, String positiveButton, OnDismissListener listener) {
+		
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+		dialogBuilder.setTitle(title);
+		dialogBuilder.setMessage(message);
+		dialogBuilder.setCancelable(false);
+		dialogBuilder.setPositiveButton( positiveButton, new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									// TODO Auto-generated method stub
+									dialog.dismiss();
+								}
+								   
+							   });
+		
+		AlertDialog dialog = dialogBuilder.create();
+		dialog.setOnDismissListener(listener);
+		dialog.show();				   	
+		
+	}
 	public static void showConfirmationDialog(Context context, String title, String message, final OnClickListener listener) {
 		
 		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -83,6 +104,7 @@ public class DialogUtil {
 				listener.onClick(dialog, CANCEL);
 			}
 		} );
+		
 		AlertDialog dialog = dialogBuilder.create();
 		dialog.show();				   	
 		
