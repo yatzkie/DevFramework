@@ -10,3 +10,5 @@ bin/classes/com/engine/framework/database/Table.class
 *.class
 
 bin/classes/com/engine/framework/activity/EngineActivity.class
+
+bin/classes/com/engine/framework/helper/DatabaseHelper.class
