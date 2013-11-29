@@ -54,7 +54,45 @@ public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
      * process has not been completed.
      */
     protected boolean mSurfaceConfiguring = false;
+	private int desiredHeight;
+	private int desiredWidth;
 
+    public CamPreview(Activity activity, int cameraId, LayoutMode mode, int pictureWidth, int pictureHeight) {
+    	super(activity); // Always necessary
+        mActivity = activity;
+        mLayoutMode = mode;
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+//        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        
+        // deprecated setting, but required on Android versions prior to 3.0
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+        	mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            if (Camera.getNumberOfCameras() > cameraId) {
+                mCameraId = cameraId;
+            } else {
+                mCameraId = 0;
+            }
+        } else {
+            mCameraId = 0;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            mCamera = Camera.open(mCameraId);
+        } else {
+            mCamera = Camera.open();
+        }
+        Camera.Parameters cameraParams = mCamera.getParameters();
+        mPreviewSizeList = cameraParams.getSupportedPreviewSizes();
+        mPictureSizeList = cameraParams.getSupportedPictureSizes();
+        
+        desiredHeight = pictureHeight;
+        desiredWidth = pictureWidth;
+        
+    }
+    
     public CamPreview(Activity activity, int cameraId, LayoutMode mode) {
         super(activity); // Always necessary
         mActivity = activity;
@@ -113,8 +151,9 @@ public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
         // The code in this if-statement is prevented from executed again when surfaceChanged is
         // called again due to the change of the layout size in this if-statement.
         if (!mSurfaceConfiguring) {
-            Camera.Size previewSize = determinePreviewSize(portrait, width, height);
-            Camera.Size pictureSize = determinePictureSize(previewSize);
+            Camera.Size previewSize = determinePreviewSize(portrait, width, height); 
+            Camera.Size pictureSize = determinePictureSize(desiredWidth, desiredHeight);
+            
             if (DEBUGGING) { Log.v(LOG_TAG, "Desired Preview Size - w: " + width + ", h: " + height); }
             mPreviewSize = previewSize;
             mPictureSize = pictureSize;
@@ -217,6 +256,32 @@ public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
         
         // if the preview size is not supported as a picture size
         float reqRatio = ((float) previewSize.width) / previewSize.height;
+        float curRatio, deltaRatio;
+        float deltaRatioMin = Float.MAX_VALUE;
+        for (Camera.Size size : mPictureSizeList) {
+            curRatio = ((float) size.width) / size.height;
+            deltaRatio = Math.abs(reqRatio - curRatio);
+            if (deltaRatio < deltaRatioMin) {
+                deltaRatioMin = deltaRatio;
+                retSize = size;
+            }
+        }
+        
+        return retSize;
+    }
+    
+    protected Camera.Size determinePictureSize(int width, int height) {
+        Camera.Size retSize = null;
+        for (Camera.Size size : mPictureSizeList) {
+            if (size.width == width && size.height == height) {
+                return size;
+            }
+        }
+        
+        if (DEBUGGING) { Log.v(LOG_TAG, "Same picture size not found."); }
+        
+        // if the preview size is not supported as a picture size
+        float reqRatio = ((float) width) / height;
         float curRatio, deltaRatio;
         float deltaRatioMin = Float.MAX_VALUE;
         for (Camera.Size size : mPictureSizeList) {

@@ -4,16 +4,20 @@
  */
 package com.engine.framework.helper;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 import com.engine.framework.database.EngineDatabase;
 import com.engine.framework.database.Table;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -120,6 +124,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return false;
 	}
 
-	
+	public void exportDB(String dbPath, String dir){
+			String sd = Environment.getExternalStorageDirectory() + dir;
+	       
+	       File sdFile = new File(sd);
+	       if(!sdFile.exists())
+	    	   sdFile.mkdirs();
+	       
+	       FileChannel source=null;
+	       FileChannel destination=null;
+	       String backupDBPath = getDatabaseName();
+	       File currentDB = new File(dbPath, backupDBPath);
+	       File backupDB = new File(sd, backupDBPath);
+	       
+	       try {
+	            source = new FileInputStream(currentDB).getChannel();
+	            destination = new FileOutputStream(backupDB).getChannel();
+	            destination.transferFrom(source, 0, source.size());
+	            source.close();
+	            destination.close();
+	            System.out.println("DB Exported");
+	        } catch(IOException e) {
+	        	e.printStackTrace();
+	        }
+	}
 	
 }

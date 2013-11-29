@@ -9,7 +9,7 @@ public class ViewUtil {
 	public static boolean isEmpty(EditText... editTexts) {
 		
 		for(EditText et : editTexts) {
-			if(et != null && et.getText().toString().trim().length() == 0)
+			if(et == null || et.getText().toString().trim().length() == 0)
 				return true;
 		}
 		

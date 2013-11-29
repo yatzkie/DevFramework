@@ -298,22 +298,22 @@ public class FileHelper {
 		if(file.exists()) file.mkdirs();
 	}
 
-	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {
-		
-		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
-		Matrix matrix = new Matrix();
-		matrix.postRotate( rotateAngle );
-		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-		return bitmap;
-		
-	}
-
-	public static Bitmap scaleImage(Bitmap bitmap, int width, int height) {
-		
-		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
-		return bitmap;
-		
-	}
+//	public static Bitmap scaleImage(Bitmap bitmap, int width, int height, int rotateAngle) {
+//		
+//		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
+//		Matrix matrix = new Matrix();
+//		matrix.postRotate( rotateAngle );
+//		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+//		return bitmap;
+//		
+//	}
+//
+//	public static Bitmap scaleImage(Bitmap bitmap, int width, int height) {
+//		
+//		bitmap = Bitmap.createScaledBitmap( bitmap, width, height, false);
+//		return bitmap;
+//		
+//	}
 
 	public static byte[] getByteArray(Bitmap src, Bitmap.CompressFormat format, int quality) {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();

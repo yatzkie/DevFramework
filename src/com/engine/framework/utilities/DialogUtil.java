@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
+import android.view.LayoutInflater;
+import android.view.View;
 
 public class DialogUtil {
 
@@ -128,12 +130,16 @@ public class DialogUtil {
 		dialog.show();	
 	}
 	
-	public static Dialog getCustomDialog(Context context, int resId, String title) {
+	public static AlertDialog.Builder getCustomDialog(Context context, int resId, String title) {
 		
-		Dialog dialog = new Dialog(context);
-		dialog.setTitle(title);
-		dialog.setContentView(resId);
-		return dialog;
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(resId, null);
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		if(title != null) builder.setTitle(title);
+		builder.setView(layout);
+		
+		return builder;
 		
 	}
 }
