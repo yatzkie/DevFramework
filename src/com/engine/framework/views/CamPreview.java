@@ -151,8 +151,12 @@ public class CamPreview extends SurfaceView implements SurfaceHolder.Callback {
         // The code in this if-statement is prevented from executed again when surfaceChanged is
         // called again due to the change of the layout size in this if-statement.
         if (!mSurfaceConfiguring) {
-            Camera.Size previewSize = determinePreviewSize(portrait, width, height); 
-            Camera.Size pictureSize = determinePictureSize(desiredWidth, desiredHeight);
+            Camera.Size previewSize = determinePreviewSize(portrait, width, height);
+            Camera.Size pictureSize = null;
+            if(desiredHeight == 0 && desiredWidth == 0)
+            	pictureSize = determinePictureSize(previewSize);
+            else
+            	pictureSize = determinePictureSize(desiredWidth, desiredHeight);
             
             if (DEBUGGING) { Log.v(LOG_TAG, "Desired Preview Size - w: " + width + ", h: " + height); }
             mPreviewSize = previewSize;
